@@ -1,0 +1,45 @@
+﻿$game_id     = "SDHD"
+
+$game_folder = "S:\${game_id}"
+$base        = "${game_folder}\app.vhd"
+$data        = "${game_folder}\appdata.vhd"
+$option      = "${game_folder}\option.vhd"
+
+$keychip_config = "--displayState `"C:\SEGA\system\preboot\preboot_Data\StreamingAssets\state.txt`" --configState `"C:\SEGA\system\preboot\preboot_Data\StreamingAssets\current_config.txt`""
+Get-ChildItem -Path "C:\SEGA\System\settings\${game_id}\*.keychip.ps1" | ForEach-Object { . $_.FullName }
+
+# SIG # Begin signature block
+# MIIGEgYJKoZIhvcNAQcCoIIGAzCCBf8CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUjP61OVSW8Dmf6+CoSN9LbbfU
+# K+qgggOCMIIDfjCCAmagAwIBAgIQJlq0EDKWmKtOwveGVRLWsTANBgkqhkiG9w0B
+# AQUFADBFMUMwQQYDVQQDDDpDb2RlIFNpZ25pbmcgLSBBY2FkZW15IENpdHkgUmVz
+# ZWFyY2ggUC5TLlIuIChmb3IgTWlzc2xlc3MpMB4XDTIzMTIyOTIzMTMzNVoXDTMw
+# MTIyNDA1MDAwMFowRTFDMEEGA1UEAww6Q29kZSBTaWduaW5nIC0gQWNhZGVteSBD
+# aXR5IFJlc2VhcmNoIFAuUy5SLiAoZm9yIE1pc3NsZXNzKTCCASIwDQYJKoZIhvcN
+# AQEBBQADggEPADCCAQoCggEBANqtipcPEhVWQAUz+KVOBm806ZX0LVp/DV/AW2yJ
+# VlBcmT4WP8cIEIay4jU3QZCoVYztQnxI6VUgXsxrpgVfdmWv7Mi1T0yESaicB56k
+# c+E+SuJ5QPJiNEOom1cFhpriafjIwjcXazBP1RfqzqP7yfEbN3CxSp4jpRHCfIbq
+# agYyVjDqMnyk4iXh2oOY19OHCmHqKCZ0jRlDLpU2RCVMEV0pNewq7O2wn745NxF2
+# cm4FP4CU48Zav2LJDwlI2ZA0j5xVJKnwLhRhde0A+N6oFG5GWP709lW9A2EY4tIV
+# GKX+FH6BwnXCAedWoiHMa55m0u1KGfxUJc1wC6fnFzEa5mECAwEAAaNqMGgwDgYD
+# VR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMCIGA1UdEQQbMBmCF2Js
+# dWUtc3RlZWwubWlzc2xlc3MubmV0MB0GA1UdDgQWBBSQo+sgAwlIIYWIsEVsvXgF
+# dUTz0DANBgkqhkiG9w0BAQUFAAOCAQEAC8jrcbhyQLn2ddfFn2cRk4ONXdp7EDbE
+# Eqr+OifivDuUwK5hV2ds9ygbvcuYK2hv1wrixTVElIvQ40qXzSPtbSwlQ86OCGWc
+# hrnnI04iAMKFq8m3rxVrePe0rGwJk/NcIXORRQbU8H3yI2UEMAOqCXr8CGcJyxer
+# n9jLCxIBQXf8nJ9GU7GydDn/ODFdqCKUhbPAlMCQC4kdQMLPc+6XYnlQ6ex2qSPq
+# MT5Josy660b+bUb+PrvhOEG5TH2MP+SCq9hQJZ3viv/ciG1c5x6WnW2HU6WM7XC1
+# HKt1v5NZCaCwDD1n0v4RqIODI0Qk9eqmD+45rkrQdZHRZuhwgmBASTGCAfowggH2
+# AgEBMFkwRTFDMEEGA1UEAww6Q29kZSBTaWduaW5nIC0gQWNhZGVteSBDaXR5IFJl
+# c2VhcmNoIFAuUy5SLiAoZm9yIE1pc3NsZXNzKQIQJlq0EDKWmKtOwveGVRLWsTAJ
+# BgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkqhkiG9w0B
+# CQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAj
+# BgkqhkiG9w0BCQQxFgQU8apij8LcnoYq5Bmu80wazQTcTPQwDQYJKoZIhvcNAQEB
+# BQAEggEAOJkov3GGrpXTVHxVPz6d/P7F82A5qGCufhMu0ET4NAygQrwIMsfa+Iok
+# kaInew42IqL2gDXaUZdySz5cDdRoWqMPhb/mdktoay1Dh1HmzQJsCU+M7z1mUIRW
+# 9p8NjEyC2TgmFvT28JwZrSog33Bib6NlmAOe1vf2JlJvBWu1Um0bG7vNobhF/lt0
+# exbOOg8+V8veNIWaLYKRtrxQySxyfgKNfb+kmWBPStvK/265XFBsheLjIG3iE2zw
+# tfLuQyTD+ploj9iNwcOWi2xkX9FlGxdgi5ysVePM4EBZ/peRq8OHPR0CgT0oeRWD
+# cwP9qRlPBArKRMWXq3V9/aGEYP7NCg==
+# SIG # End signature block

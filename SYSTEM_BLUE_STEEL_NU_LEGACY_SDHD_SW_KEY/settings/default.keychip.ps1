@@ -1,0 +1,47 @@
+﻿$keychip_config = "${keychip_config} --applicationVHD $base --appDataVHD $data --optionVHD $option"
+
+if (Test-Path -Path "C:\SEGA\system\applications\SDHD\prepare.ps1") {
+    $keychip_config = "${keychip_config} --prepareScript prepare.ps1"
+}
+if (Test-Path -Path "C:\SEGA\system\applications\SDHD\cleanup.ps1") {
+    $keychip_config = "${keychip_config} --cleanupScript cleanup.ps1"
+}
+if (Test-Path -Path "C:\SEGA\system\applications\SDHD\shutdown.ps1") {
+    $keychip_config = "${keychip_config} --shutdownScript shutdown.ps1"
+}
+
+# SIG # Begin signature block
+# MIIGEgYJKoZIhvcNAQcCoIIGAzCCBf8CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU8rV9c4hy+NHW/X08lAoN8p1m
+# Sv2gggOCMIIDfjCCAmagAwIBAgIQJlq0EDKWmKtOwveGVRLWsTANBgkqhkiG9w0B
+# AQUFADBFMUMwQQYDVQQDDDpDb2RlIFNpZ25pbmcgLSBBY2FkZW15IENpdHkgUmVz
+# ZWFyY2ggUC5TLlIuIChmb3IgTWlzc2xlc3MpMB4XDTIzMTIyOTIzMTMzNVoXDTMw
+# MTIyNDA1MDAwMFowRTFDMEEGA1UEAww6Q29kZSBTaWduaW5nIC0gQWNhZGVteSBD
+# aXR5IFJlc2VhcmNoIFAuUy5SLiAoZm9yIE1pc3NsZXNzKTCCASIwDQYJKoZIhvcN
+# AQEBBQADggEPADCCAQoCggEBANqtipcPEhVWQAUz+KVOBm806ZX0LVp/DV/AW2yJ
+# VlBcmT4WP8cIEIay4jU3QZCoVYztQnxI6VUgXsxrpgVfdmWv7Mi1T0yESaicB56k
+# c+E+SuJ5QPJiNEOom1cFhpriafjIwjcXazBP1RfqzqP7yfEbN3CxSp4jpRHCfIbq
+# agYyVjDqMnyk4iXh2oOY19OHCmHqKCZ0jRlDLpU2RCVMEV0pNewq7O2wn745NxF2
+# cm4FP4CU48Zav2LJDwlI2ZA0j5xVJKnwLhRhde0A+N6oFG5GWP709lW9A2EY4tIV
+# GKX+FH6BwnXCAedWoiHMa55m0u1KGfxUJc1wC6fnFzEa5mECAwEAAaNqMGgwDgYD
+# VR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMCIGA1UdEQQbMBmCF2Js
+# dWUtc3RlZWwubWlzc2xlc3MubmV0MB0GA1UdDgQWBBSQo+sgAwlIIYWIsEVsvXgF
+# dUTz0DANBgkqhkiG9w0BAQUFAAOCAQEAC8jrcbhyQLn2ddfFn2cRk4ONXdp7EDbE
+# Eqr+OifivDuUwK5hV2ds9ygbvcuYK2hv1wrixTVElIvQ40qXzSPtbSwlQ86OCGWc
+# hrnnI04iAMKFq8m3rxVrePe0rGwJk/NcIXORRQbU8H3yI2UEMAOqCXr8CGcJyxer
+# n9jLCxIBQXf8nJ9GU7GydDn/ODFdqCKUhbPAlMCQC4kdQMLPc+6XYnlQ6ex2qSPq
+# MT5Josy660b+bUb+PrvhOEG5TH2MP+SCq9hQJZ3viv/ciG1c5x6WnW2HU6WM7XC1
+# HKt1v5NZCaCwDD1n0v4RqIODI0Qk9eqmD+45rkrQdZHRZuhwgmBASTGCAfowggH2
+# AgEBMFkwRTFDMEEGA1UEAww6Q29kZSBTaWduaW5nIC0gQWNhZGVteSBDaXR5IFJl
+# c2VhcmNoIFAuUy5SLiAoZm9yIE1pc3NsZXNzKQIQJlq0EDKWmKtOwveGVRLWsTAJ
+# BgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkqhkiG9w0B
+# CQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAj
+# BgkqhkiG9w0BCQQxFgQUvdmgzbZV9sZC4MOc9f6NR14IJ0cwDQYJKoZIhvcNAQEB
+# BQAEggEAunyXO4wcN73W4xyWs06KlSOwSCfYk7/gIluXW2RFI/MevsmXHqBLOqYQ
+# k8XluzUqSM6nlC4N3iEkY0eg16uGwM9rbvv//fstu5jmAtHTV01PhBQvuvQicbEM
+# T310ZkgaDNauMPakSlebDSF8kPkkAE3QEUrqyL2xTQ3/hT4dD0o/uXMSkUd24pqH
+# 6GFv8mdBqY727uswPMVu+lDKumHNf6ccDADKSq01jygD2kbJcxIp4WFXa/bBRUPU
+# ZasvHzhAIoNq+sa1MdtRjOmIRn9K2NOxw2KEHcWStqHHTfLTY4jOqfgKVB0JK0Mq
+# TMdGk4gKL+bWcUceBSay4G2nB9nluA==
+# SIG # End signature block
