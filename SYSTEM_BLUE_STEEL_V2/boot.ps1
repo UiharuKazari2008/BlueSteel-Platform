@@ -1,5 +1,6 @@
 ﻿Start-Transcript -Path S:\boot.log.txt -Append | Out-Null
 
+$Host.UI.RawUI.WindowTitle = 'BlueSteel 2'
 $force_install_mode = $false
 $usb_connected = $((Get-Volume -FileSystemLabel SOS_INS -ErrorAction SilentlyContinue | Format-List).Length -gt 0)
 $is_admin = $($(whoami) -notlike "*systemuser")
@@ -8,6 +9,8 @@ $admin_req = $(Test-Path C:\SEGA\update\ADMIN_CONSOLE -ErrorAction SilentlyConti
 $allow_no_locker = $(Test-Path C:\SEGA\ALLOW_NO_BITLOCKER_AND_IM_OK_WITH_THIS -ErrorAction SilentlyContinue)
 $allow_no_filter = $(Test-Path C:\SEGA\ALLOW_WRITE_ACCESS_AND_IM_OK_WITH_THIS -ErrorAction SilentlyContinue)
 $platform_installed = $(Test-Path -Path "C:\SEGA\system\PLATFORM_INSTALLED" -ErrorAction SilentlyContinue)
+
+$system_ram = ((Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum / 1GB)
 
 Set-Service -Name NVDisplay.ContainerLocalSystem -StartupType Disabled -Confirm:$false -ErrorAction SilentlyContinue
 
@@ -95,6 +98,9 @@ if ($system_update_found) {
                 . C:\SEGA\update\post_update.ps1
                 Remove-Item -Path "C:\SEGA\update\post_update.ps1" -Force -Confirm:$false -ErrorAction SilentlyContinue
             }
+            if ($usb_connected -eq $false) {
+                Remove-Item -Path "$_" -Force -Confirm:$false -ErrorAction SilentlyContinue
+            }
         }
     }
     if (Test-Path -Path "${src}OVERLAY_*.pack" -ErrorAction SilentlyContinue) {
@@ -112,6 +118,17 @@ if ($system_update_found) {
                 . C:\SEGA\temp\post_update.ps1
                 Remove-Item -Path "C:\SEGA\temp\post_update.ps1" -Force -Confirm:$false -ErrorAction SilentlyContinue
             }
+            if ($usb_connected -eq $false) {
+                Remove-Item -Path "$_" -Force -Confirm:$false -ErrorAction SilentlyContinue
+            }
+        }
+    }
+    if ((Get-Volume -FileSystemLabel SOS_INS -ErrorAction SilentlyContinue | Format-List).Length -gt 0) {
+        Write-Host "`n`n============================================="
+        Write-Host " Remove Update USB!"
+        Write-Host "============================================="
+        While ((Get-Volume -FileSystemLabel SOS_INS -ErrorAction SilentlyContinue | Format-List).Length -gt 0) {
+            Sleep -Seconds 1
         }
     }
 }
@@ -206,6 +223,14 @@ if ($admin_req -eq $true -or $is_admin -eq $true) {
         }
     }
     if (((Get-BitLockerVolume C:).ProtectionStatus -eq "On") -or $allow_no_locker -eq $true -or $platform_installed -eq $false) {
+        Stop-Service -Name wuauserv -Force -Confirm:$false -ErrorAction SilentlyContinue
+        Stop-Service -Name UsoSvc -Force -Confirm:$false -ErrorAction SilentlyContinue
+        Stop-Service -Name WaaSMedicSvc -Force -Confirm:$false -ErrorAction SilentlyContinue
+
+        Set-Service -Name wuauserv -StartupType Disabled -Confirm:$false -ErrorAction SilentlyContinue
+        Set-Service -Name UsoSvc -StartupType Disabled -Confirm:$false -ErrorAction SilentlyContinue
+        Set-Service -Name WaaSMedicSvc -StartupType Disabled -Confirm:$false -ErrorAction SilentlyContinue
+
         Start-Process -Wait -FilePath C:\SEGA\system\preboot\preboot.exe -WorkingDirectory "C:\SEGA\system\preboot\"
     } else {
         # Violation System Erase    
@@ -219,8 +244,8 @@ if ($admin_req -eq $true -or $is_admin -eq $true) {
 # SIG # Begin signature block
 # MIIGEgYJKoZIhvcNAQcCoIIGAzCCBf8CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUfXolTVFRf/QoLUOeECU/0FX+
-# UgegggOCMIIDfjCCAmagAwIBAgIQJlq0EDKWmKtOwveGVRLWsTANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUzuq7ilnMsmcMzoRG5AL/erQH
+# +dugggOCMIIDfjCCAmagAwIBAgIQJlq0EDKWmKtOwveGVRLWsTANBgkqhkiG9w0B
 # AQUFADBFMUMwQQYDVQQDDDpDb2RlIFNpZ25pbmcgLSBBY2FkZW15IENpdHkgUmVz
 # ZWFyY2ggUC5TLlIuIChmb3IgTWlzc2xlc3MpMB4XDTIzMTIyOTIzMTMzNVoXDTMw
 # MTIyNDA1MDAwMFowRTFDMEEGA1UEAww6Q29kZSBTaWduaW5nIC0gQWNhZGVteSBD
@@ -243,11 +268,11 @@ if ($admin_req -eq $true -or $is_admin -eq $true) {
 # c2VhcmNoIFAuUy5SLiAoZm9yIE1pc3NsZXNzKQIQJlq0EDKWmKtOwveGVRLWsTAJ
 # BgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkqhkiG9w0B
 # CQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAj
-# BgkqhkiG9w0BCQQxFgQUMG+8lRD1ksvBreKAZSuCDXJsXu8wDQYJKoZIhvcNAQEB
-# BQAEggEAlz33F63duhi14tpXkYsQDd2fhYAiIDLb7onyXzulk+Pb4EvDFvq16kGu
-# ruVKRzWOQIfyRXfcQVeAdh8g2+cJ0SwRvPKQ3n5Ca0Zy+0DpVkA0rXQjsl05S+An
-# va0tfyjLb5sy/XXcUBVrQBFO6MHDx8HrZYEPtb+gW7d5m7dj4uibBL3liSYRpb91
-# yx8xRNnJzGPYJbT5KFuYvkAEOttlwkA1wcLPij2FlNLWt7qJm2ICrxGSah1Fyc8N
-# RJP802TnBge8dUUZYEFjpQD/Jv8d3uFGzGeg25hsGJ657C4hcOMRc3S89n7pLC8a
-# zD+uwP4xtJy9xZnsti82hYjznbnReQ==
+# BgkqhkiG9w0BCQQxFgQU3i7CLKTaQiJIchQn220H8EV47lMwDQYJKoZIhvcNAQEB
+# BQAEggEAH0q2ylzxzAx5HQNcGoKUDrMWWCcrtRy4az/oXxuRM4JHCgIarSLRqCIw
+# kdP+ROxHBU/vh5xyYdEwgCYjp4nZv1xGFoatskvJqZFV11g070V3eBfOm66GikVI
+# ykOVA2QvL0U8cMgloz/PHnVb3GoU8o4p0wUmxS1uhRjlSxAVAb86/1AXp83BUCD8
+# MUockUG8xtl1sKILN50Nw5e/ZV6Ise2e3davWuHzSsuPMetm8eWSHvX/LkODi8Ie
+# 3L+1/NS5w3gHUaVhta8t5sBHsyJSu/PqMNWQfOLC6n0QK7HPAgFNs405OiZywslG
+# HrAC9Dg5Inuxu9LOe2WQCC3OAByBIQ==
 # SIG # End signature block

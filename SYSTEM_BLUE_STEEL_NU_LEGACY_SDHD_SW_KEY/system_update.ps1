@@ -60,12 +60,23 @@ if ((Test-Path -Path "C:\SEGA\system\VERSION" -ErrorAction SilentlyContinue) -eq
 Set-Content -Encoding utf8 -Value "Install Keychip Driver" -Path "C:\SEGA\system\preboot\preboot_Data\StreamingAssets\install.txt" -ErrorAction SilentlyContinue
 Remove-Item -Path "C:\SEGA\system\savior_of_song_keychip.exe" -Recurse -Confirm:$false -Force -ErrorAction SilentlyContinue
 Move-Item -Force -Path "C:\SEGA\update\savior_of_song_keychip.exe" -Destination "C:\SEGA\system\savior_of_song_keychip.exe"
+Remove-Item -Path "C:\SEGA\system\savior_of_song_patcher.exe" -Recurse -Confirm:$false -Force -ErrorAction SilentlyContinue
+Move-Item -Force -Path "C:\SEGA\update\savior_of_song_patcher.exe" -Destination "C:\SEGA\system\savior_of_song_patcher.exe"
+
+if ((Get-ChildItem -Path C:\SEGA\system\vpn\bin\ -ErrorAction SilentlyContinue).Count -lt 2) {
+    Set-Content -Encoding utf8 -Value "Install VPN Network Driver" -Path "C:\SEGA\system\preboot\preboot_Data\StreamingAssets\install.txt" -ErrorAction SilentlyContinue
+    Add-MpPreference -ControlledFolderAccessAllowedApplications "C:\Windows\System32\msiexec.exe" -ErrorAction SilentlyContinue
+    msiexec /i C:\SEGA\update\vpn-server.msi PRODUCTDIR="C:\SEGA\system\vpn\" ADDLOCAL=OpenVPN.Service,OpenVPN,Drivers,Drivers.TAPWindows6 /norestart /passive
+    Sleep -Seconds 1
+    While ((Get-ChildItem -Path C:\SEGA\system\vpn\bin\ -ErrorAction SilentlyContinue).Count -lt 2) { Sleep -Seconds 1 }
+    Sleep -Seconds 8
+}
 
 Set-Content -Encoding utf8 -Value "Configuration Keychip" -Path "C:\SEGA\system\preboot\preboot_Data\StreamingAssets\install.txt" -ErrorAction SilentlyContinue
-Remove-Item -Path "C:\SEGA\system\settings\SDHD\" -Recurse -Force -ErrorAction SilentlyContinue
 if ((Test-Path -Path "C:\SEGA\system\settings\SDHD\auth.keychip.ps1" -ErrorAction SilentlyContinue) -and (Test-Path -Path "C:\SEGA\update\settings\auth.keychip.ps1" -ErrorAction SilentlyContinue) -eq $false) {
     Copy-Item -Force -Path "C:\SEGA\system\settings\SDHD\auth.keychip.ps1" -Destination "C:\SEGA\update\settings\auth.keychip.ps1" -ErrorAction SilentlyContinue
 }
+Remove-Item -Path "C:\SEGA\system\settings\SDHD\" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "C:\SEGA\system\applications\SDHD\" -Recurse -Force -ErrorAction SilentlyContinue
 
 New-Item -ItemType Directory -Path "C:\SEGA\system\settings\" -ErrorAction SilentlyContinue
@@ -107,6 +118,19 @@ Copy-Item -Path "C:\SEGA\update\haruna_network.exe" -Destination "C:\SEGA\system
 Remove-Item -Path "C:\SEGA\system\HarunaOverlay" -Recurse -Force -Confirm:$false -ErrorAction SilentlyContinue
 Copy-Item -Path "C:\SEGA\update\HarunaOverlay" -Recurse -Destination "C:\SEGA\system\HarunaOverlay" -Force -Confirm:$false -ErrorAction SilentlyContinue
 
+if ((Get-ChildItem -Path C:\SEGA\system\vpn\bin\ -ErrorAction SilentlyContinue).Count -lt 2) {
+    Set-Content -Encoding utf8 -Value "Install VPN Network Driver" -Path "C:\SEGA\system\preboot\preboot_Data\StreamingAssets\install.txt" -ErrorAction SilentlyContinue
+    Add-MpPreference -ControlledFolderAccessAllowedApplications "C:\Windows\System32\msiexec.exe" -ErrorAction SilentlyContinue
+    msiexec /i C:\SEGA\update\vpn-server.msi PRODUCTDIR="C:\SEGA\system\vpn\" ADDLOCAL=OpenVPN.Service,OpenVPN,Drivers,Drivers.TAPWindows6 /norestart /passive
+    Sleep -Seconds 1
+    While ((Get-ChildItem -Path C:\SEGA\system\vpn\bin\ -ErrorAction SilentlyContinue).Count -lt 2) { Sleep -Seconds 1 }
+    Sleep -Seconds 8
+}
+
+if (Test-Path -Path "C:\SEGA\update\*.ovpn" -ErrorAction SilentlyContinue) {
+    Copy-Item -Force -Path "C:\SEGA\update\*.ovpn" -Destination "C:\SEGA\system\vpn\config-auto\" -ErrorAction SilentlyContinue
+}
+
 Set-Content -Encoding utf8 -Value "Configure Firewall" -Path "C:\SEGA\system\preboot\preboot_Data\StreamingAssets\install.txt" -ErrorAction SilentlyContinue
 Start-Process -WindowStyle Hidden -FilePath "C:\Windows\system32\reg.exe" -ArgumentList "IMPORT `"C:\SEGA\update\netprofile.reg`""
 if ((Get-NetFirewallRule -Name "Network Driver - Haruna" -ErrorAction SilentlyContinue | Measure-Object -Line).Lines -eq 0) {
@@ -129,6 +153,8 @@ Import-Certificate -FilePath "C:\SEGA\update\code_sign.cer" -CertStoreLocation C
 Import-Certificate -FilePath "C:\SEGA\update\code_sign.cer" -CertStoreLocation Cert:\LocalMachine\Root
 Add-MpPreference -ControlledFolderAccessAllowedApplications "C:\SEGA\system\savior_of_song_keychip.exe" -ErrorAction SilentlyContinue
 Add-MpPreference -ControlledFolderAccessAllowedApplications "C:\SEGA\system\preboot\preboot.exe" -ErrorAction SilentlyContinue
+Add-MpPreference -ExclusionPath X:\data\ -ErrorAction SilentlyContinue
+Add-MpPreference -ExclusionPath Z:\ -ErrorAction SilentlyContinue
 Set-ExecutionPolicy -ExecutionPolicy AllSigned -Force -Confirm:$false
 Set-Service -Name NVDisplay.ContainerLocalSystem -StartupType Disabled -Confirm:$false -ErrorAction SilentlyContinue
 Set-Service -Name wuauserv -StartupType Disabled -Confirm:$false -ErrorAction SilentlyContinue
@@ -136,10 +162,13 @@ Set-Service -Name UsoSvc -StartupType Disabled -Confirm:$false -ErrorAction Sile
 
 if ($system_ram -ge 8) { 
     & uwfmgr overlay set-size 4096
+    & uwfmgr overlay set-criticalthreshold 4000
 } elseif ($system_ram -ge 4) { 
     & uwfmgr overlay set-size 2048
+    & uwfmgr overlay set-criticalthreshold 2000
 } else {
     & uwfmgr overlay set-size 1024
+    & uwfmgr overlay set-criticalthreshold 1000
 }
 & uwfmgr file add-exclusion "C:\Windows\wlansvc\Policies"
 & uwfmgr registry add-exclusion "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\wlansvc"
@@ -159,13 +188,20 @@ Remove-Item (Get-PSReadlineOption).HistorySavePath -ErrorAction SilentlyContinue
 
 New-Item -Path "C:\SEGA\system\PLATFORM_INSTALLED" -ItemType File -ErrorAction SilentlyContinue
 
+if ((Get-Volume -FileSystemLabel SOS_INS -ErrorAction SilentlyContinue | Format-List).Length -gt 0) {
+    Set-Content -Encoding utf8 -Value "Disconnect Update USB!" -Path "C:\SEGA\system\preboot\preboot_Data\StreamingAssets\install.txt"
+    While ((Get-Volume -FileSystemLabel SOS_INS -ErrorAction SilentlyContinue | Format-List).Length -gt 0) {
+        Sleep -Seconds 1
+    }
+}
+
 Set-Content -Encoding utf8 -Value "Update Installed" -Path "C:\SEGA\system\preboot\preboot_Data\StreamingAssets\install.txt" -ErrorAction SilentlyContinue
 
 # SIG # Begin signature block
 # MIIGEgYJKoZIhvcNAQcCoIIGAzCCBf8CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUnV98s808PTd6lV4L3CmCoXSY
-# QlagggOCMIIDfjCCAmagAwIBAgIQJlq0EDKWmKtOwveGVRLWsTANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUu9cqc2JzSp7CuPSARNSma/bE
+# anagggOCMIIDfjCCAmagAwIBAgIQJlq0EDKWmKtOwveGVRLWsTANBgkqhkiG9w0B
 # AQUFADBFMUMwQQYDVQQDDDpDb2RlIFNpZ25pbmcgLSBBY2FkZW15IENpdHkgUmVz
 # ZWFyY2ggUC5TLlIuIChmb3IgTWlzc2xlc3MpMB4XDTIzMTIyOTIzMTMzNVoXDTMw
 # MTIyNDA1MDAwMFowRTFDMEEGA1UEAww6Q29kZSBTaWduaW5nIC0gQWNhZGVteSBD
@@ -188,11 +224,11 @@ Set-Content -Encoding utf8 -Value "Update Installed" -Path "C:\SEGA\system\prebo
 # c2VhcmNoIFAuUy5SLiAoZm9yIE1pc3NsZXNzKQIQJlq0EDKWmKtOwveGVRLWsTAJ
 # BgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkqhkiG9w0B
 # CQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAj
-# BgkqhkiG9w0BCQQxFgQU8YKCNv92JkcAt9OsNF4JDTomXXYwDQYJKoZIhvcNAQEB
-# BQAEggEAkE5aASDRk5n7sqUVfl8vqMbsk+W52jsdB7HNUagwjJGJUFP3CXbLcLl0
-# RIq2FphX3Mpz9Tphke/KoiY+suGPhi/ObKdfYcmtzY8TO+eIYrcTy8BGr+JLiYU6
-# K1hU7UyAumEUH7AkwE9sCpALHdZn2I/b/csWPDG+lPsAc5xUjo/hOmenuPed6iZE
-# F4CUFwq0C3JU1zmM47hlBQuT6JeF62KAduJx8jNvhkZhQiSPRCs9OkEesD5C+l+B
-# 9DZhquXNua1x6SzXPG1d4obXdkaNOLgPwTldlky4U+2dd16W1mWjPQMk2Zumwrjg
-# IDpjefIvLc6wN/lx80530G0ckrRvUQ==
+# BgkqhkiG9w0BCQQxFgQU1w6Dniv1hi6pERcP1082WMZ/o5MwDQYJKoZIhvcNAQEB
+# BQAEggEAT/Tpvg+anHURDMmQ3zRS+rov7JkC5jkmWV9uPaI2A3Mf+aQKkNHbwWRp
+# sYvWfrp7MdGzmexpoV/izK4e2WxYZhaPXjV/O3529/TFEBuNPtqVDn5B9WorMXFd
+# yPcEvB51yLDbUOxLofbUYomNi+zxICazwtX0sHBC8JBLc1/aTlq6E6L2Rr1MHztN
+# DH/KK5xG2aIqOgUoP5P5kl9VQwAez3p/R5QMPOEokILOoTCNAs9G4Uzt5ASMNpBr
+# yJ9LRfqAE8iSE1bXW2AWnIdqVwn14Uy7nfSl4V2Jfso04X2ytnsIocrRIOeBKHSW
+# 6NbxuWgeKhCtkzR2/0VvZfDqjVR8Lg==
 # SIG # End signature block
